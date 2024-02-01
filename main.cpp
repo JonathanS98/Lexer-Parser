@@ -30,7 +30,7 @@ void printTree(ASTNode* node)
 }
 
 int main() {
-    std::string input = "(loo)";
+    std::string input = "(love+hate)";
     auto start = input.begin();
     auto end = input.end();
 

@@ -83,7 +83,6 @@ Letter *parseLetter(IT &first, IT last) {
     Letter* pLetter = new Letter;
     ASTNode* pLHS = nullptr;
     auto temp = first;
-    bool consumed = false;
     auto Next_Token = Lexer::find(++temp, last);
     auto token = Lexer::find(first, last);
 
@@ -101,18 +100,10 @@ Letter *parseLetter(IT &first, IT last) {
 
         while (token != Lexer::RPAREN){
             token = Lexer::find(it, last);
-            if(token == Lexer::LETTER){
-                pLHS = parseLetter(it, last);
-                pLetter->add(pLHS);
-            }
             it++;
             if(token == Lexer::OR_OP){
                 checkOr = true;
             }
-            if (token == Lexer::END){
-                return pLetter;
-            }
-
         }
         if(checkOr){
             first++;
@@ -125,8 +116,6 @@ Letter *parseLetter(IT &first, IT last) {
             }
             return pLetter;
         }
-
-
     }
     else {
         pLHS = parseCh(first, last);
@@ -158,14 +147,9 @@ Letter *parseLetter(IT &first, IT last) {
 Expression* parseExpr(IT& first, IT last) {
     auto pExpr = new Expression();
     ASTNode* node = nullptr;
-
     while (first != last) {
         node = parseLetter(first, last);
-        if (node) {
-            pExpr->add(node);
-        } else {
-            break;
-        }
+        pExpr->add(node);
     }
 
     return pExpr;
