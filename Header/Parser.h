@@ -13,8 +13,8 @@
 <MATCH> -> <EXPR>
 <EXPR> -> <LETTER> | <GROUP>
 <LETTER> -> <MANY> | <DOT> | <OR> | <CHAR>
-<GROUP> -> (<LETTER>)
- <MANY> -> <CHAR><MANY>
+<GROUP> -> (<LETTER>) | (<LETTER>'+'<LETTER>)
+<MANY> -> <CHAR><MANY>
 <DOT> -> <DOT>{<CHAR>} | <DOT><MANY>
 <OR> -> <CHAR> "+" <CHAR>
  */
@@ -22,6 +22,7 @@
 Letter *parseLetter(IT &first, IT last);
 Or* parseOR(IT& first, IT last);
 Expression* parseExpr(IT& first, IT last);
+Group* parseGroup(IT& first, IT last);
 
 Char *parseCh(IT &first, IT last) {
     if (first == last) return nullptr;
@@ -101,10 +102,6 @@ Letter *parseLetter(IT &first, IT last) {
 
         while (token != Lexer::RPAREN){
             token = Lexer::find(it, last);
-            if(token == Lexer::LETTER){
-                pLHS = parseLetter(it, last);
-                pLetter->add(pLHS);
-            }
             it++;
             if(token == Lexer::OR_OP){
                 checkOr = true;
@@ -120,6 +117,14 @@ Letter *parseLetter(IT &first, IT last) {
             pLetter->add(pLHS);
             token = Lexer::find(first, last);
             if(token != Lexer::END){
+                Letter *pRHS = parseLetter(first,last);
+                pLetter->add(pRHS);
+            }
+            return pLetter;
+        }else{
+            first++;
+            token = Lexer::find(first, last);
+            if(token != Lexer::RPAREN){
                 Letter *pRHS = parseLetter(first,last);
                 pLetter->add(pRHS);
             }
@@ -160,7 +165,12 @@ Expression* parseExpr(IT& first, IT last) {
     ASTNode* node = nullptr;
 
     while (first != last) {
-        node = parseLetter(first, last);
+        auto token = Lexer::find(first, last);
+        if (token == Lexer::LPAREN) { // If the token is '(', it's a group
+            node = parseGroup(first, last);
+        } else { // Otherwise, try to parse it as a letter
+            node = parseLetter(first, last);
+        }
         if (node) {
             pExpr->add(node);
         } else {
@@ -192,6 +202,49 @@ Or* parseOR(IT& first, IT last){
     pOr->add(pRHS);
 
     return pOr;
+
+}
+
+Group* parseGroup(IT& first, IT last){
+    if (first == last || *first != '(') return nullptr;
+    first++;
+
+    Group* pGroup = new Group();
+
+
+    ASTNode* pLHS = parseLetter(first, last);
+    if (!pLHS) {
+        delete pGroup;
+        return nullptr;
+    }
+
+    if (first != last && *first == '+') {
+        first++;
+        ASTNode* pRHS = parseLetter(first, last);
+        if (!pRHS) {
+            delete pLHS;
+            delete pGroup;
+            return nullptr;
+        }
+
+        Or* orNode = new Or();
+        orNode->add(pLHS);
+        orNode->add(pRHS);
+        pGroup->add(orNode);
+    } else {
+
+        pGroup->add(pLHS);
+    }
+
+
+    if (first == last || *first != ')') {
+
+        delete pGroup;
+        return nullptr;
+    }
+    first++;
+
+    return pGroup;
 
 }
 #endif //LABB1_PARSER_H

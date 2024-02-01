@@ -1,4 +1,4 @@
-# Install script for directory: D:/MIUN/Year 3/7. Programming Theory/Laboration/Labb1
+# Install script for directory: C:/Users/Alice/OneDrive/Desktop/MIUN/Yesr3/ProgrammeringTeori/Labb1
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -45,5 +45,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "D:/MIUN/Year 3/7. Programming Theory/Laboration/Labb1/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "C:/Users/Alice/OneDrive/Desktop/MIUN/Yesr3/ProgrammeringTeori/Labb1/cmake-build-debug/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

@@ -154,5 +154,29 @@ struct Expression : ASTNode {
     }
 };
 
+struct Group : ASTNode {
+
+    bool evaluate(IT &first, IT last) override {
+
+        return children[0]->evaluate(first, last);
+    }
+
+    std::string id() override{
+        return "GROUP";
+    }
+};
+
+struct GroupIs : ASTNode {
+
+    bool evaluate(IT &first, IT last) override {
+
+        return children[0]->evaluate(first, last);
+    }
+
+    std::string id() override{
+        return "GROUP_Is";
+    }
+};
+
 
 #endif //LABB1_NODE_H

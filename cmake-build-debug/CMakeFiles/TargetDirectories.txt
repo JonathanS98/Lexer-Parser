@@ -1,3 +1,3 @@
-D:/MIUN/Year 3/7. Programming Theory/Laboration/Labb1/cmake-build-debug/CMakeFiles/Labb1.dir
-D:/MIUN/Year 3/7. Programming Theory/Laboration/Labb1/cmake-build-debug/CMakeFiles/edit_cache.dir
-D:/MIUN/Year 3/7. Programming Theory/Laboration/Labb1/cmake-build-debug/CMakeFiles/rebuild_cache.dir
+C:/Users/Alice/OneDrive/Desktop/MIUN/Yesr3/ProgrammeringTeori/Labb1/cmake-build-debug/CMakeFiles/Labb1.dir
+C:/Users/Alice/OneDrive/Desktop/MIUN/Yesr3/ProgrammeringTeori/Labb1/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/Alice/OneDrive/Desktop/MIUN/Yesr3/ProgrammeringTeori/Labb1/cmake-build-debug/CMakeFiles/rebuild_cache.dir
