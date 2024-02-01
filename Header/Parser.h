@@ -14,7 +14,7 @@
 <EXPR> -> <LETTER> | <GROUP>
 <LETTER> -> <MANY> | <DOT> | <OR> | <CHAR>
 <GROUP> -> (<LETTER>)
- <MANY> -> <CHAR><MANY>
+<MANY> -> <CHAR><MANY>
 <DOT> -> <DOT>{<CHAR>} | <DOT><MANY>
 <OR> -> <CHAR> "+" <CHAR>
  */
