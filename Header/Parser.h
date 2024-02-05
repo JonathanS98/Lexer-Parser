@@ -12,8 +12,8 @@
 /*
 <MATCH> -> <EXPR>
 <EXPR> -> <LETTER> | <GROUP>
-<LETTER> -> <MANY> | <DOT> | <OR> | <CHAR>
-<GROUP> -> (<LETTER>) | (<LETTER>'+'<LETTER>)
+<LETTER> -> <MANY> | <DOT> | <CHAR>
+<GROUP> -> (<LETTER>) | <OR>
 <MANY> -> <CHAR><MANY>
 <DOT> -> <DOT>{<CHAR>} | <DOT><MANY>
 <OR> -> <CHAR> "+" <CHAR>
@@ -96,43 +96,6 @@ Letter *parseLetter(IT &first, IT last) {
         pLHS = parseDot(first, last);
         pLetter->add(pLHS);
     }
-    if (token == Lexer::LPAREN){
-        bool checkOr = false;
-        auto it = first;
-
-        while (token != Lexer::RPAREN){
-            token = Lexer::find(it, last);
-            it++;
-            if(token == Lexer::OR_OP){
-                checkOr = true;
-            }
-            if (token == Lexer::END){
-                return pLetter;
-            }
-
-        }
-        if(checkOr){
-            first++;
-            pLHS = parseOR(first, last);
-            pLetter->add(pLHS);
-            token = Lexer::find(first, last);
-            if(token != Lexer::END){
-                Letter *pRHS = parseLetter(first,last);
-                pLetter->add(pRHS);
-            }
-            return pLetter;
-        }else{
-            first++;
-            token = Lexer::find(first, last);
-            if(token != Lexer::RPAREN){
-                Letter *pRHS = parseLetter(first,last);
-                pLetter->add(pRHS);
-            }
-            return pLetter;
-        }
-
-
-    }
     else {
         pLHS = parseCh(first, last);
         pLetter->add(pLHS);
@@ -164,11 +127,14 @@ Expression* parseExpr(IT& first, IT last) {
     auto pExpr = new Expression();
     ASTNode* node = nullptr;
 
-    while (first != last) {
+    while (true) {
         auto token = Lexer::find(first, last);
-        if (token == Lexer::LPAREN) { // If the token is '(', it's a group
+        if(token == Lexer::END){
+            return pExpr;
+        }
+        if (token == Lexer::LPAREN) {
             node = parseGroup(first, last);
-        } else { // Otherwise, try to parse it as a letter
+        } else {
             node = parseLetter(first, last);
         }
         if (node) {
@@ -211,34 +177,19 @@ Group* parseGroup(IT& first, IT last){
 
     Group* pGroup = new Group();
 
-
     ASTNode* pLHS = parseLetter(first, last);
-    if (!pLHS) {
-        delete pGroup;
-        return nullptr;
-    }
-
     if (first != last && *first == '+') {
         first++;
         ASTNode* pRHS = parseLetter(first, last);
-        if (!pRHS) {
-            delete pLHS;
-            delete pGroup;
-            return nullptr;
-        }
-
         Or* orNode = new Or();
         orNode->add(pLHS);
         orNode->add(pRHS);
         pGroup->add(orNode);
     } else {
-
         pGroup->add(pLHS);
     }
 
-
     if (first == last || *first != ')') {
-
         delete pGroup;
         return nullptr;
     }
